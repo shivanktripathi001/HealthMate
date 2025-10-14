@@ -6,4 +6,5 @@ from views.symptom_checker import render as symptom_render
 from views.remedies import render as remedy_render
 from views.appointment import render as appointment_render
 from views.feedback import render as dashboard_render
+
 home()                                                               

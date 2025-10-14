@@ -139,18 +139,26 @@ def render():
     if not hospitals:
         st.error("No hospitals available. Please check your database or insert sample data.")
         return
-        
-    # Modified line to access dictionary keys instead of list indices
-    hospital_names = [f"{h['name']} ({h['location']})" for h in hospitals]
     
-    selected_index = st.selectbox(
-        "Choose a hospital",
-        options=range(len(hospital_names)),
-        format_func=lambda i: hospital_names[i]
-    )
-    
-    # Assuming 'hospital_id' is the correct key
-    selected_hospital_id = hospitals[selected_index]['hospital_id']
+    # Check if hospitals is a list of dictionaries or tuples
+    if hospitals and isinstance(hospitals[0], dict):
+        # If dictionaries, use keys
+        hospital_names = [f"{h['name']} ({h['city']})" for h in hospitals]
+        selected_index = st.selectbox(
+            "Choose a hospital",
+            options=range(len(hospital_names)),
+            format_func=lambda i: hospital_names[i]
+        )
+        selected_hospital_id = hospitals[selected_index]['hospital_id']
+    else:
+        # If tuples, use indices
+        hospital_names = [f"{h[1]} ({h[2]})" for h in hospitals]
+        selected_index = st.selectbox(
+            "Choose a hospital",
+            options=range(len(hospital_names)),
+            format_func=lambda i: hospital_names[i]
+        )
+        selected_hospital_id = hospitals[selected_index][0]
     
     date = st.date_input("Select a date")
     time = st.time_input("Select a time")
@@ -167,9 +175,3 @@ def render():
             dt = f"{date} {time}"
             book_appointment(st.session_state["user_id"], selected_hospital_id, symptom_id, dt)
             st.success("Appointment booked successfully!")
- 
-
-
-
-
-

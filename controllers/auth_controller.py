@@ -31,3 +31,6 @@ def handle_signup(username, password, email):
         return False
     create_user(username, password, email)
     return handle_login(username, password)
+
+
+

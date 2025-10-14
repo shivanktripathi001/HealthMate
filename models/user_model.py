@@ -37,3 +37,26 @@ def get_user_by_username(username):
     user = cursor.fetchone()
     conn.close()
     return user
+
+
+def update_user_password(username, new_password):
+    """Update user password in the database"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute(
+            "UPDATE users SET password = %s WHERE username = %s",
+            (new_password, username)
+        )
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error updating password: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+        
