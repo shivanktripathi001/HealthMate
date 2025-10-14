@@ -175,3 +175,6 @@ def render():
             dt = f"{date} {time}"
             book_appointment(st.session_state["user_id"], selected_hospital_id, symptom_id, dt)
             st.success("Appointment booked successfully!")
+
+
+            
