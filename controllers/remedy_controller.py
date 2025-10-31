@@ -62,3 +62,5 @@ def get_remedies(health_issue, path="data/remedies.csv"):
             "remedy": str(remedy_val).strip()
         })
     return remedies
+ 
+ 
