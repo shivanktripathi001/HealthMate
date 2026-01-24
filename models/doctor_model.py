@@ -1,5 +1,216 @@
+# # models/doctor_model.py
+# import pymysql
+
+# def get_connection():
+#     return pymysql.connect(
+#         host="localhost",
+#         user="root",
+#         password="root",
+#         database="healthmate_schema",
+#         cursorclass=pymysql.cursors.DictCursor
+#     )
+
+# def get_doctor_by_username(username):
+#     """Fetch doctor by username"""
+#     conn = get_connection()
+#     cursor = conn.cursor()
+    
+#     try:
+#         cursor.execute("SELECT * FROM doctors WHERE username = %s", (username,))
+#         doctor = cursor.fetchone()
+#         return doctor
+#     except Exception as e:
+#         print(f"Error fetching doctor: {e}")
+#         return None
+#     finally:
+#         cursor.close()
+#         conn.close()
+
+# def get_all_appointments_for_hospital(hospital_id):
+#     """Fetch all appointments for a specific hospital"""
+#     conn = get_connection()
+#     cursor = conn.cursor()
+    
+#     try:
+#         query = """
+#             SELECT 
+#                 a.appointment_id,
+#                 a.appointment_date,
+#                 a.status,
+#                 u.username as patient_name,
+#                 u.email as patient_email,
+#                 s.symptom_name,
+#                 s.description as symptom_description,
+#                 h.name as hospital_name
+#             FROM appointments a
+#             JOIN users u ON a.user_id = u.user_id
+#             JOIN symptoms s ON a.symptom_id = s.symptom_id
+#             JOIN hospitals h ON a.hospital_id = h.hospital_id
+#             WHERE a.hospital_id = %s
+#             ORDER BY a.appointment_date DESC
+#         """
+#         cursor.execute(query, (hospital_id,))
+#         appointments = cursor.fetchall()
+#         return appointments
+#     except Exception as e:
+#         print(f"Error fetching appointments: {e}")
+#         return []
+#     finally:
+#         cursor.close()
+#         conn.close()
+
+# def update_appointment_status(appointment_id, status):
+#     """Update appointment status"""
+#     conn = get_connection()
+#     cursor = conn.cursor()
+    
+#     try:
+#         cursor.execute(
+#             "UPDATE appointments SET status = %s WHERE appointment_id = %s",
+#             (status, appointment_id)
+#         )
+#         conn.commit()
+#         return True
+#     except Exception as e:
+#         print(f"Error updating appointment status: {e}")
+#         return False
+#     finally:
+#         cursor.close()
+#         conn.close()
+
+
+# models/doctor_model.py
+# import pymysql
+
+# def get_connection():
+#     return pymysql.connect(
+#         host="localhost",
+#         user="root",
+#         password="root",
+#         database="healthmate_schema",
+#         cursorclass=pymysql.cursors.DictCursor
+#     )
+
+# def get_doctor_by_username(username):
+#     """Fetch doctor by username"""
+#     conn = get_connection()
+#     cursor = conn.cursor()
+    
+#     try:
+#         cursor.execute("SELECT * FROM doctors WHERE username = %s", (username,))
+#         doctor = cursor.fetchone()
+#         return doctor
+#     except Exception as e:
+#         print(f"Error fetching doctor: {e}")
+#         return None
+#     finally:
+#         cursor.close()
+#         conn.close()
+
+# def get_all_appointments_for_doctor(doctor_id):
+#     """Fetch all appointments for a specific doctor"""
+#     conn = get_connection()
+#     cursor = conn.cursor()
+    
+#     try:
+#         query = """
+#             SELECT 
+#                 a.appointment_id,
+#                 a.date_time as appointment_date,
+#                 COALESCE(a.status, 'pending') as status,
+#                 u.username as patient_name,
+#                 u.email as patient_email,
+#                 s.severity_level as symptom_name,
+#                 s.description as symptom_description,
+#                 h.name as hospital_name,
+#                 d.name as doctor_name,
+#                 d.specialization
+#             FROM appointments a
+#             JOIN users u ON a.user_id = u.user_id
+#             JOIN symptoms s ON a.symptom_id = s.symptom_id
+#             JOIN doctors d ON a.doctor_id = d.doctor_id
+#             LEFT JOIN hospitals h ON d.hospital_id = h.hospital_id
+#             WHERE a.doctor_id = %s
+#             ORDER BY a.date_time DESC
+#         """
+#         cursor.execute(query, (doctor_id,))
+#         appointments = cursor.fetchall()
+#         print(f"✓ Fetched {len(appointments)} appointments for doctor {doctor_id}")
+#         return appointments
+#     except Exception as e:
+#         print(f"✗ Error fetching appointments: {e}")
+#         import traceback
+#         traceback.print_exc()
+#         return []
+#     finally:
+#         cursor.close()
+#         conn.close()
+
+# def get_all_appointments_for_hospital(hospital_id):
+#     """Fetch all appointments for a specific hospital (all doctors in that hospital)"""
+#     conn = get_connection()
+#     cursor = conn.cursor()
+    
+#     try:
+#         query = """
+#             SELECT 
+#                 a.appointment_id,
+#                 a.date_time as appointment_date,
+#                 COALESCE(a.status, 'pending') as status,
+#                 u.username as patient_name,
+#                 u.email as patient_email,
+#                 s.severity_level as symptom_name,
+#                 s.description as symptom_description,
+#                 h.name as hospital_name,
+#                 d.name as doctor_name,
+#                 d.specialization
+#             FROM appointments a
+#             JOIN users u ON a.user_id = u.user_id
+#             JOIN symptoms s ON a.symptom_id = s.symptom_id
+#             JOIN doctors d ON a.doctor_id = d.doctor_id
+#             LEFT JOIN hospitals h ON d.hospital_id = h.hospital_id
+#             WHERE d.hospital_id = %s
+#             ORDER BY a.date_time DESC
+#         """
+#         cursor.execute(query, (hospital_id,))
+#         appointments = cursor.fetchall()
+#         print(f"✓ Fetched {len(appointments)} appointments for hospital {hospital_id}")
+#         return appointments
+#     except Exception as e:
+#         print(f"✗ Error fetching appointments: {e}")
+#         import traceback
+#         traceback.print_exc()
+#         return []
+#     finally:
+#         cursor.close()
+#         conn.close()
+
+# def update_appointment_status(appointment_id, status):
+#     """Update appointment status"""
+#     conn = get_connection()
+#     cursor = conn.cursor()
+    
+#     try:
+#         cursor.execute(
+#             "UPDATE appointments SET status = %s WHERE appointment_id = %s",
+#             (status, appointment_id)
+#         )
+#         conn.commit()
+#         print(f"✓ Updated appointment {appointment_id} status to {status}")
+#         return True
+#     except Exception as e:
+#         print(f"✗ Error updating appointment status: {e}")
+#         import traceback
+#         traceback.print_exc()
+#         return False
+#     finally:
+#         cursor.close()
+#         conn.close()
+
+
 # models/doctor_model.py
 import pymysql
+import traceback
 
 def get_connection():
     return pymysql.connect(
@@ -26,8 +237,30 @@ def get_doctor_by_username(username):
         cursor.close()
         conn.close()
 
-def get_all_appointments_for_hospital(hospital_id):
-    """Fetch all appointments for a specific hospital"""
+def get_all_doctors():
+    """Get all doctors from the database"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute("""
+            SELECT doctor_id, username, name, specialization, email, phone 
+            FROM doctors 
+            ORDER BY name
+        """)
+        doctors = cursor.fetchall()
+        print(f"✓ Fetched {len(doctors)} doctors")
+        return doctors
+    except Exception as e:
+        print(f"✗ Error fetching all doctors: {e}")
+        traceback.print_exc()
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_all_appointments_for_doctor(doctor_id):
+    """Fetch all appointments for a specific doctor"""
     conn = get_connection()
     cursor = conn.cursor()
     
@@ -35,25 +268,68 @@ def get_all_appointments_for_hospital(hospital_id):
         query = """
             SELECT 
                 a.appointment_id,
-                a.appointment_date,
-                a.status,
+                a.date_time as appointment_date,
+                COALESCE(a.status, 'pending') as status,
                 u.username as patient_name,
                 u.email as patient_email,
-                s.symptom_name,
+                s.severity_level as symptom_name,
                 s.description as symptom_description,
-                h.name as hospital_name
+                h.name as hospital_name,
+                d.name as doctor_name,
+                d.specialization
             FROM appointments a
             JOIN users u ON a.user_id = u.user_id
             JOIN symptoms s ON a.symptom_id = s.symptom_id
-            JOIN hospitals h ON a.hospital_id = h.hospital_id
-            WHERE a.hospital_id = %s
-            ORDER BY a.appointment_date DESC
+            JOIN doctors d ON a.doctor_id = d.doctor_id
+            LEFT JOIN hospitals h ON d.hospital_id = h.hospital_id
+            WHERE a.doctor_id = %s
+            ORDER BY a.date_time DESC
+        """
+        cursor.execute(query, (doctor_id,))
+        appointments = cursor.fetchall()
+        print(f"✓ Fetched {len(appointments)} appointments for doctor {doctor_id}")
+        return appointments
+    except Exception as e:
+        print(f"✗ Error fetching appointments: {e}")
+        traceback.print_exc()
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_all_appointments_for_hospital(hospital_id):
+    """Fetch all appointments for a specific hospital (all doctors in that hospital)"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    try:
+        query = """
+            SELECT 
+                a.appointment_id,
+                a.date_time as appointment_date,
+                COALESCE(a.status, 'pending') as status,
+                u.username as patient_name,
+                u.email as patient_email,
+                s.severity_level as symptom_name,
+                s.description as symptom_description,
+                h.name as hospital_name,
+                d.name as doctor_name,
+                d.specialization
+            FROM appointments a
+            JOIN users u ON a.user_id = u.user_id
+            JOIN symptoms s ON a.symptom_id = s.symptom_id
+            JOIN doctors d ON a.doctor_id = d.doctor_id
+            LEFT JOIN hospitals h ON d.hospital_id = h.hospital_id
+            WHERE d.hospital_id = %s
+            ORDER BY a.date_time DESC
         """
         cursor.execute(query, (hospital_id,))
         appointments = cursor.fetchall()
+        print(f"✓ Fetched {len(appointments)} appointments for hospital {hospital_id}")
         return appointments
     except Exception as e:
-        print(f"Error fetching appointments: {e}")
+        print(f"✗ Error fetching appointments: {e}")
+        traceback.print_exc()
         return []
     finally:
         cursor.close()
@@ -70,9 +346,11 @@ def update_appointment_status(appointment_id, status):
             (status, appointment_id)
         )
         conn.commit()
+        print(f"✓ Updated appointment {appointment_id} status to {status}")
         return True
     except Exception as e:
-        print(f"Error updating appointment status: {e}")
+        print(f"✗ Error updating appointment status: {e}")
+        traceback.print_exc()
         return False
     finally:
         cursor.close()
